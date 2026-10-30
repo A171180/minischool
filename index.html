@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MineSchool</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#campus"><i></i>MineSchool</a>
+  <nav id="nav" aria-label="Campus buildings"></nav>
+  <button class="tgl" id="theme" type="button">Night</button>
+</header>
+<main>
+  <section class="page" id="campus">
+    <div class="scene">
+      <div class="sun"></div><div class="cloud"></div><div class="cloud b"></div>
+      <div class="pathv"></div><div class="pathh"></div><div class="fence"></div>
+      <div class="tree" style="left:2%;top:170px"></div><div class="tree" style="right:3%;top:190px"></div>
+      <div class="tree" style="left:6%;bottom:50px"></div><div class="tree" style="right:7%;bottom:60px"></div>
+      <div class="bench" style="left:36%;top:57%"></div><div class="bench" style="left:60%;top:57%"></div>
+      <div class="grid" id="buildings"></div>
+    </div>
+    <div class="pix welcome"><h2>Welcome to MineSchool</h2><p style="margin:6px 0 0">Walk up to any building to manage that part of your school. Every building opens a working page.</p></div>
+  </section>
+
+  <section class="page" id="dashboard">
+    <div class="head"><div><h2>Main Building · Dashboard</h2><p>A snapshot of the whole school.</p></div><span class="tag">Sample data</span></div>
+    <div class="stats" id="stats"></div>
+    <div class="two">
+      <div class="pix card"><h3>Academic performance by department</h3><div class="bars" id="bars"></div><div class="lbls" id="lbls"></div><p style="color:var(--mute);font-size:13px;margin:8px 0 0">Average GPA (out of 4.0) from current student records.</p></div>
+      <div class="pix card"><h3>Recent registrations</h3><ul class="clean" id="recent"></ul></div>
+    </div>
+  </section>
+
+  <section class="page" id="students">
+    <div class="head"><div><h2>Student Office</h2><p>Register, find, edit and remove students.</p></div><span class="tag">Sample data</span></div>
+    <div class="pix card">
+      <h3 id="formTitle">Register a student</h3>
+      <form class="f" id="sform">
+        <input type="hidden" id="sid">
+        <label>Full name<input id="sname" required maxlength="60"></label>
+        <label>Email<input id="semail" type="email" required></label>
+        <label>Department<select id="sdept"></select></label>
+        <label>Year<select id="syear"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <label>GPA<input id="sgpa" type="number" min="0" max="4" step="0.1" value="3.0" required></label>
+        <div class="acts"><button class="btn" id="ssave">Register student</button><button class="btn st" type="button" id="scancel" hidden>Cancel edit</button></div>
+      </form>
+    </div>
+    <div class="pix card" style="margin-top:20px">
+      <label>Search students<input id="ssearch" type="search" placeholder="Name, email or department"></label>
+      <div class="tw"><table><thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Year</th><th>GPA</th><th>Actions</th></tr></thead><tbody id="stbody"></tbody></table></div>
+    </div>
+    <dialog id="prof"></dialog>
+  </section>
+
+  <section class="page" id="courses">
+    <div class="head"><div><h2>Library · Courses</h2><p>Every course on the shelf.</p></div><span class="tag">Sample data</span></div>
+    <div class="pix card"><h3>Add a course</h3>
+      <form class="f" id="cform">
+        <label>Code<input id="ccode" required maxlength="8" placeholder="CS301"></label>
+        <label>Title<input id="ctitle" required maxlength="50"></label>
+        <label>Department<select id="cdept"></select></label>
+        <label>Credits<input id="ccred" type="number" min="1" max="6" value="3" required></label>
+        <button class="btn">Add course</button>
+      </form></div>
+    <div class="cards" id="clist"></div>
+  </section>
+
+  <section class="page" id="exams">
+    <div class="head"><div><h2>Examination Hall</h2><p>Upcoming exams and seating.</p></div><span class="tag">Sample data</span></div>
+    <div class="pix card">
+      <label style="max-width:260px">Filter by department<select id="efilter"></select></label>
+      <div class="tw"><table><thead><tr><th>Date</th><th>Course</th><th>Room</th><th>Duration</th><th>Status</th></tr></thead><tbody id="etbody"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="page" id="attendance">
+    <div class="head"><div><h2>Attendance Centre</h2><p>Mark who is in class today.</p></div><span class="tag">Sample data</span></div>
+    <div class="stats"><div class="pix stat"><strong id="apct">0%</strong><span>Present today</span></div><div class="pix stat"><strong id="acnt">0</strong><span>Students marked present</span></div></div>
+    <div class="pix card"><div class="acts" style="margin-bottom:8px"><button class="btn" id="allp">Mark all present</button><button class="btn st" id="alla">Mark all absent</button></div>
+      <div class="tw"><table><thead><tr><th>Student</th><th>Overall</th><th>Today</th></tr></thead><tbody id="atbody"></tbody></table></div></div>
+  </section>
+
+  <section class="page" id="sql">
+    <div class="head"><div><h2>Database Laboratory · SQL Explorer</h2><p>Learn what MineSchool will ask MySQL to do later.</p></div><span class="tag">Mock only</span></div>
+    <div class="banner"><strong>No database is connected.</strong> “Run” works on the sample data in this page and never changes it. The real MySQL calls arrive in Phase 2.</div>
+    <div id="qlist"></div>
+  </section>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="mock-data.js"></script>
+<script src="data-service.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
