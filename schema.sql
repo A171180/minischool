@@ -1,87 +1,72 @@
--- MineSchool database (MySQL 8). Not used by the Phase 1 frontend.
--- Run: mysql -u root -p < schema.sql
-CREATE DATABASE IF NOT EXISTS mineschool CHARACTER SET utf8mb4;
+
+CREATE DATABASE IF NOT EXISTS mineschool;
 USE mineschool;
 
-CREATE TABLE departments (
-  id   INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(60) NOT NULL UNIQUE
-);
-
+-- 1. Tables
 CREATE TABLE students (
-  id       INT AUTO_INCREMENT PRIMARY KEY,
-  name     VARCHAR(60)  NOT NULL,
-  email    VARCHAR(100) NOT NULL UNIQUE,
-  dept_id  INT NOT NULL,
-  year     TINYINT NOT NULL CHECK (year BETWEEN 1 AND 4),
-  gpa      DECIMAL(2,1) NOT NULL CHECK (gpa BETWEEN 0 AND 4),
-  joined   DATE NOT NULL DEFAULT (CURRENT_DATE),
-  FOREIGN KEY (dept_id) REFERENCES departments(id)
-) AUTO_INCREMENT = 1001;
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  name       VARCHAR(60),
+  email      VARCHAR(100),
+  department VARCHAR(60),
+  year       INT,
+  gpa        DECIMAL(2,1),
+  attendance INT,
+  joined     DATE
+);
 
 CREATE TABLE courses (
-  code    VARCHAR(8) PRIMARY KEY,
-  title   VARCHAR(50) NOT NULL,
-  dept_id INT NOT NULL,
-  credits TINYINT NOT NULL CHECK (credits BETWEEN 1 AND 6),
-  FOREIGN KEY (dept_id) REFERENCES departments(id)
-);
-
-CREATE TABLE enrollments (
-  student_id  INT NOT NULL,
-  course_code VARCHAR(8) NOT NULL,
-  PRIMARY KEY (student_id, course_code),
-  FOREIGN KEY (student_id)  REFERENCES students(id) ON DELETE CASCADE,
-  FOREIGN KEY (course_code) REFERENCES courses(code) ON DELETE CASCADE
+  code       VARCHAR(10) PRIMARY KEY,
+  title      VARCHAR(60),
+  department VARCHAR(60),
+  credits    INT
 );
 
 CREATE TABLE exams (
-  id          INT AUTO_INCREMENT PRIMARY KEY,
-  course_code VARCHAR(8) NOT NULL,
-  exam_date   DATE NOT NULL,
-  room        VARCHAR(20) NOT NULL,
-  minutes     SMALLINT NOT NULL,
-  FOREIGN KEY (course_code) REFERENCES courses(code) ON DELETE CASCADE
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  course     VARCHAR(60),
+  department VARCHAR(60),
+  exam_date  DATE,
+  room       VARCHAR(20),
+  minutes    INT
 );
 
-CREATE TABLE attendance (
-  student_id INT NOT NULL,
-  day        DATE NOT NULL,
-  present    BOOLEAN NOT NULL,
-  PRIMARY KEY (student_id, day),
-  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
-);
+-- 2. Sample data
+INSERT INTO students (name, email, department, year, gpa, attendance, joined) VALUES
+('Aarav Sharma', 'aarav.sharma@mineschool.edu', 'Computer Science', 2, 3.7, 94, '2026-09-04'),
+('Simran Kaur',  'simran.kaur@mineschool.edu',  'Mathematics',      3, 3.9, 97, '2026-09-06'),
+('Rohan Mehta',  'rohan.mehta@mineschool.edu',  'Physics',          1, 3.2, 88, '2026-09-12'),
+('Priya Nair',   'priya.nair@mineschool.edu',   'Biology',          4, 3.5, 91, '2026-09-15'),
+('Kabir Singh',  'kabir.singh@mineschool.edu',  'Computer Science', 1, 2.9, 82, '2026-09-21'),
+('Meera Iyer',   'meera.iyer@mineschool.edu',   'Arts',             2, 3.6, 95, '2026-10-02'),
+('Arjun Verma',  'arjun.verma@mineschool.edu',  'Mathematics',      1, 3.1, 86, '2026-10-11'),
+('Tanvi Gill',   'tanvi.gill@mineschool.edu',   'Biology',          3, 3.8, 96, '2026-10-24');
 
--- Sample data (same as mock-data.js)
-INSERT INTO departments (name) VALUES
- ('Computer Science'),('Mathematics'),('Physics'),('Biology'),('Arts');
+INSERT INTO courses (code, title, department, credits) VALUES
+('CS101', 'Intro to Programming', 'Computer Science', 4),
+('CS240', 'Databases and SQL',    'Computer Science', 3),
+('MA120', 'Linear Algebra',       'Mathematics',      4),
+('PH110', 'Mechanics',            'Physics',          3),
+('BI130', 'Cell Biology',         'Biology',          3),
+('AR105', 'Digital Illustration', 'Arts',             2);
 
-INSERT INTO students (name, email, dept_id, year, gpa, joined) VALUES
- ('Aarav Sharma','aarav.sharma@mineschool.edu',1,2,3.7,'2026-09-04'),
- ('Simran Kaur','simran.kaur@mineschool.edu',2,3,3.9,'2026-09-06'),
- ('Rohan Mehta','rohan.mehta@mineschool.edu',3,1,3.2,'2026-09-12'),
- ('Priya Nair','priya.nair@mineschool.edu',4,4,3.5,'2026-09-15'),
- ('Kabir Singh','kabir.singh@mineschool.edu',1,1,2.9,'2026-09-21'),
- ('Meera Iyer','meera.iyer@mineschool.edu',5,2,3.6,'2026-10-02'),
- ('Arjun Verma','arjun.verma@mineschool.edu',2,1,3.1,'2026-10-11'),
- ('Tanvi Gill','tanvi.gill@mineschool.edu',4,3,3.8,'2026-10-24');
+INSERT INTO exams (course, department, exam_date, room, minutes) VALUES
+('CS101 Intro to Programming', 'Computer Science', '2026-11-09', 'Hall A',   120),
+('MA120 Linear Algebra',       'Mathematics',      '2026-11-11', 'Hall B',   150),
+('PH110 Mechanics',            'Physics',          '2026-11-14', 'Hall A',   120),
+('BI130 Cell Biology',         'Biology',          '2026-11-17', 'Hall C',   90),
+('CS240 Databases and SQL',    'Computer Science', '2026-11-20', 'Hall B',   120),
+('AR105 Digital Illustration', 'Arts',             '2026-11-24', 'Studio 2', 180);
 
-INSERT INTO courses (code, title, dept_id, credits) VALUES
- ('CS101','Intro to Programming',1,4),('CS240','Databases and SQL',1,3),
- ('MA120','Linear Algebra',2,4),('PH110','Mechanics',3,3),
- ('BI130','Cell Biology',4,3),('AR105','Digital Illustration',5,2);
-
-INSERT INTO exams (course_code, exam_date, room, minutes) VALUES
- ('CS101','2026-11-09','Hall A',120),('MA120','2026-11-11','Hall B',150),
- ('PH110','2026-11-14','Hall A',120),('BI130','2026-11-17','Hall C',90),
- ('CS240','2026-11-20','Hall B',120),('AR105','2026-11-24','Studio 2',180);
-
--- Queries shown in the SQL Explorer page
+-- 3. Example queries (same ones as the SQL Explorer page)
 SELECT * FROM students;
+
 SELECT name, gpa FROM students WHERE gpa >= 3.7 ORDER BY gpa DESC;
-INSERT INTO students (name, email, dept_id, year, gpa)
-  VALUES ('Nisha Rao','nisha.rao@mineschool.edu',3,1,3.4);
-UPDATE students SET gpa = 3.8, year = 3 WHERE id = 1001;
-DELETE FROM students WHERE id = 1005;
-SELECT d.name AS dept, AVG(s.gpa) AS avg_gpa
-  FROM students s JOIN departments d ON d.id = s.dept_id GROUP BY d.name;
+
+SELECT department, AVG(gpa) AS average_gpa FROM students GROUP BY department;
+
+INSERT INTO students (name, email, department, year, gpa, attendance, joined)
+VALUES ('Nisha Rao', 'nisha.rao@mineschool.edu', 'Physics', 1, 3.4, 90, '2026-10-30');
+
+UPDATE students SET gpa = 3.8, year = 3 WHERE id = 1;
+
+DELETE FROM students WHERE id = 5;
